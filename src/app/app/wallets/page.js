@@ -1,100 +1,147 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { RiAddLine, RiSearchLine, RiArrowRightUpLine, RiTimeLine, RiPercentLine, RiExchangeLine, RiArrowUpLine, RiArrowDownLine } from "react-icons/ri";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
-import { smartWallets, walletActivity } from "@/lib/mockData";
+import {
+  RiAddLine, RiDeleteBinLine, RiSearchLine, RiExternalLinkLine,
+  RiLoader4Line, RiWallet3Line, RiStarLine,
+} from "react-icons/ri";
+import { useTokens } from "@/context/TokenContext";
+import { searchTokens, formatPairData, formatCurrency, getChainLabel } from "@/lib/dexscreener";
 
 export default function WalletsPage() {
-  const [trackInput, setTrackInput] = useState("");
+  const { trackedWallets, trackWallet, removeTrackedWallet, earnTokens, completedQuests } = useTokens();
+  const [newAddress, setNewAddress] = useState("");
+  const [newLabel, setNewLabel] = useState("");
+  const [lookupQuery, setLookupQuery] = useState("");
+  const [lookupResults, setLookupResults] = useState([]);
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const [selectedWallet, setSelectedWallet] = useState(null);
+
+  function handleAddWallet(e) {
+    e.preventDefault();
+    if (!newAddress.trim()) return;
+    const added = trackWallet(newAddress.trim(), newLabel.trim());
+    if (added) {
+      setNewAddress("");
+      setNewLabel("");
+    }
+  }
+
+  async function handleTokenLookup(e) {
+    e.preventDefault();
+    if (!lookupQuery.trim()) return;
+    setLookupLoading(true);
+    try {
+      const pairs = await searchTokens(lookupQuery.trim());
+      const formatted = pairs.slice(0, 8).map(formatPairData).filter(Boolean);
+      setLookupResults(formatted);
+    } catch (err) {
+      console.error("Lookup failed:", err);
+    } finally {
+      setLookupLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Wallet Intelligence</h1>
-        <p className="text-[#888] text-sm mt-1">Track smart wallets and see what experienced investors are buying</p>
+        <p className="text-[#888] text-sm mt-1">Track wallets and lookup token holdings</p>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-        <div className="relative flex-1">
-          <RiSearchLine className="absolute left-4 top-1/2 -translate-y-1/2 text-[#888]" />
-          <input type="text" value={trackInput} onChange={(e) => setTrackInput(e.target.value)} placeholder="Enter wallet address to track..." className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#151515] border border-[#2A2A2A] text-white text-sm placeholder:text-[#666] focus:outline-none focus:border-[#F5D90A]/50 transition-colors" />
-        </div>
-        <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#F5D90A] text-[#0B0B0B] font-semibold text-sm hover:bg-[#F5D90A]/90 transition-all shrink-0">
-          <RiAddLine /> Track
-        </button>
-      </motion.div>
-
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {smartWallets.map((wallet, i) => (
-          <motion.div key={wallet.address} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.08 }} className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515] card-hover cursor-pointer">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#F5D90A]/20 to-[#A855F7]/20 flex items-center justify-center text-sm font-bold text-[#F5D90A]">{wallet.label.charAt(0)}</div>
-              <div>
-                <h3 className="text-white font-semibold text-sm">{wallet.label}</h3>
-                <span className="text-[#888] text-xs font-mono">{wallet.address}</span>
-              </div>
-            </div>
-            <div className="h-[50px] mb-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={wallet.trend.map((v, idx) => ({ v, i: idx }))}>
-                  <defs>
-                    <linearGradient id={`w-${wallet.address}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#22C55E" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="v" stroke="#22C55E" strokeWidth={1.5} fill={`url(#w-${wallet.address})`} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              <div className="text-center p-2 rounded-lg bg-[#1E1E1E]">
-                <div className="text-[#22C55E] text-xs font-bold">{wallet.pnl}</div>
-                <div className="text-[#666] text-[10px]">PnL</div>
-              </div>
-              <div className="text-center p-2 rounded-lg bg-[#1E1E1E]">
-                <div className="text-white text-xs font-bold">{wallet.winRate}</div>
-                <div className="text-[#666] text-[10px]">Win Rate</div>
-              </div>
-              <div className="text-center p-2 rounded-lg bg-[#1E1E1E]">
-                <div className="text-white text-xs font-bold">{wallet.trades}</div>
-                <div className="text-[#666] text-[10px]">Trades</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[#888] text-[10px]">Top:</span>
-              {wallet.topTokens.map((t) => (
-                <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-[#1E1E1E] text-[#F5D90A] font-medium">${t}</span>
-              ))}
-            </div>
-            <div className="flex items-center gap-1 text-[#888] text-xs">
-              <RiTimeLine /><span>Active {wallet.lastActive}</span>
-            </div>
-          </motion.div>
-        ))}
+      {/* Add wallet form */}
+      <div className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
+        <h3 className="text-white font-semibold mb-3">Track a Wallet</h3>
+        <form onSubmit={handleAddWallet} className="flex flex-col sm:flex-row gap-3">
+          <input type="text" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} placeholder="Wallet address (0x... or SOL...)" className="flex-1 px-4 py-2.5 rounded-xl bg-[#0B0B0B] border border-[#2A2A2A] text-white text-sm placeholder:text-[#666] focus:border-[#F5D90A]/50 focus:outline-none" />
+          <input type="text" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} placeholder="Label (optional)" className="sm:w-40 px-4 py-2.5 rounded-xl bg-[#0B0B0B] border border-[#2A2A2A] text-white text-sm placeholder:text-[#666] focus:border-[#F5D90A]/50 focus:outline-none" />
+          <button type="submit" className="px-5 py-2.5 rounded-xl bg-[#F5D90A] text-[#0B0B0B] font-semibold text-sm hover:bg-[#F5D90A]/90 transition-colors flex items-center gap-2 justify-center">
+            <RiAddLine /> Track
+          </button>
+        </form>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
-        <h3 className="text-white font-semibold text-lg mb-4">Recent Wallet Activity</h3>
-        <div className="space-y-2">
-          {walletActivity.map((a, i) => (
-            <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]">
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${a.type === "buy" ? "bg-[#22C55E]/10" : "bg-[#FF4444]/10"}`}>
-                  {a.type === "buy" ? <RiArrowUpLine className="text-[#22C55E] text-sm" /> : <RiArrowDownLine className="text-[#FF4444] text-sm" />}
+      {/* Tracked wallets */}
+      {trackedWallets.length > 0 && (
+        <div className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
+          <h3 className="text-white font-semibold mb-4">Tracked Wallets ({trackedWallets.length})</h3>
+          <div className="space-y-3">
+            {trackedWallets.map((wallet) => (
+              <div key={wallet.address} className="flex items-center justify-between p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#F5D90A]/10 flex items-center justify-center shrink-0">
+                    <RiWallet3Line className="text-[#F5D90A]" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-white text-sm font-medium block">{wallet.label}</span>
+                    <span className="text-[#888] text-xs truncate block font-mono">{wallet.address}</span>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-white text-sm"><span className="font-medium">{a.wallet}</span> <span className="text-[#888]">{a.action.toLowerCase()}</span> <span className="text-[#F5D90A] font-medium">${a.token}</span></div>
-                  <span className="text-[#888] text-xs">{a.time}</span>
-                </div>
+                <button onClick={() => removeTrackedWallet(wallet.address)} className="p-2 rounded-lg text-[#888] hover:text-[#FF4444] hover:bg-[#FF4444]/10 transition-colors shrink-0">
+                  <RiDeleteBinLine />
+                </button>
               </div>
-              <span className={`font-semibold text-sm ${a.type === "buy" ? "text-[#22C55E]" : "text-[#FF4444]"}`}>{a.amount}</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </motion.div>
+      )}
+
+      {/* Token Lookup */}
+      <div className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
+        <h3 className="text-white font-semibold mb-3">Token Lookup</h3>
+        <p className="text-[#888] text-sm mb-4">Search for any token to see live market data</p>
+        <form onSubmit={handleTokenLookup} className="flex gap-3 mb-4">
+          <div className="relative flex-1">
+            <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888] text-sm" />
+            <input type="text" value={lookupQuery} onChange={(e) => setLookupQuery(e.target.value)} placeholder="Search token name or address..." className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#0B0B0B] border border-[#2A2A2A] text-white text-sm placeholder:text-[#666] focus:border-[#F5D90A]/50 focus:outline-none" />
+          </div>
+          <button type="submit" disabled={lookupLoading} className="px-5 py-2.5 rounded-xl bg-[#F5D90A] text-[#0B0B0B] font-semibold text-sm hover:bg-[#F5D90A]/90 transition-colors disabled:opacity-50 flex items-center gap-2">
+            {lookupLoading ? <RiLoader4Line className="animate-spin" /> : <RiSearchLine />} Lookup
+          </button>
+        </form>
+
+        {lookupResults.length > 0 && (
+          <div className="space-y-3">
+            {lookupResults.map((token, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center justify-between p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]">
+                <div className="flex items-center gap-3 min-w-0">
+                  {token.imageUrl ? (
+                    <img src={token.imageUrl} alt="" className="w-8 h-8 rounded-full" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F5D90A]/20 to-[#F97316]/20 flex items-center justify-center text-xs font-bold text-[#F5D90A]">{token.symbol?.slice(0, 2)}</div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-white text-sm font-medium truncate max-w-[120px]">{token.name}</span>
+                      <span className="text-[#888] text-xs">{token.symbol}</span>
+                      <span className="text-[#888] text-[10px] px-1.5 py-0.5 rounded bg-[#0B0B0B]">{getChainLabel(token.chain)}</span>
+                    </div>
+                    <div className="flex items-center gap-3 mt-0.5">
+                      <span className="text-[#888] text-xs">Vol: {formatCurrency(token.volume24h)}</span>
+                      <span className="text-[#888] text-xs">Liq: {formatCurrency(token.liquidity)}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right shrink-0 flex items-center gap-3">
+                  <div>
+                    <span className="text-white text-sm font-medium block">{token.price}</span>
+                    <span className={`text-xs ${token.positive ? "text-[#22C55E]" : "text-[#FF4444]"}`}>
+                      {token.positive ? "+" : ""}{token.priceChange24h?.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ${token.alphaScore >= 8 ? "bg-[#22C55E]/10 text-[#22C55E]" : token.alphaScore >= 6 ? "bg-[#F5D90A]/10 text-[#F5D90A]" : "bg-[#F97316]/10 text-[#F97316]"}`}>
+                    <RiStarLine className="text-[10px]" /> {token.alphaScore}
+                  </div>
+                  <a href={token.url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg text-[#888] hover:text-white transition-colors">
+                    <RiExternalLinkLine />
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

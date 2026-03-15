@@ -57,7 +57,7 @@ Be specific, data-driven, and honest. If data suggests red flags, say so clearly
         "X-Title": "AlphaScope AI Analyzer",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
+        model: "meta-llama/llama-4-maverick",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.3,
         response_format: { type: "json_object" },

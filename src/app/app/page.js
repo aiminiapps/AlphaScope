@@ -294,9 +294,7 @@ export default function DashboardPage() {
           <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-[#3B82F6]/5 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center gap-3 mb-6 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F5D90A]/20 to-[#F97316]/20 flex items-center justify-center">
-              <RiLineChartLine className="text-[#F5D90A] text-lg" />
-            </div>
+          
             <div>
               <h3 className="text-white font-semibold text-lg">Trending Coins Comparison</h3>
               <p className="text-[#888] text-sm">Volume vs Liquidity vs 24h Price Change</p>
@@ -476,9 +474,6 @@ export default function DashboardPage() {
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-[#A855F7]/5 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center gap-3 mb-6 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#A855F7]/20 to-[#3B82F6]/20 flex items-center justify-center">
-              <RiBarChartBoxLine className="text-[#A855F7] text-lg" />
-            </div>
             <div>
               <h3 className="text-white font-semibold text-lg">Token Radar</h3>
               <p className="text-[#888] text-sm">Multi-dimension comparison of top 5 trending tokens</p>

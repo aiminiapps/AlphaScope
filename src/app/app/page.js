@@ -192,8 +192,8 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* ───── Trending Tokens + Activity Log ───── */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      {/* ───── Trending Tokens + Activity + Radar ───── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Trending Tokens Table */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="lg:col-span-2 p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
           <div className="flex items-center justify-between mb-4">
@@ -210,78 +210,139 @@ export default function DashboardPage() {
           ) : trending.length === 0 ? (
             <p className="text-[#888] text-sm text-center py-8">No trending data available</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[#2A2A2A]">
-                    <th className="text-left text-[#888] text-xs font-medium py-3 px-2">Token</th>
-                    <th className="text-right text-[#888] text-xs font-medium py-3 px-2">Price</th>
-                    <th className="text-right text-[#888] text-xs font-medium py-3 px-2">24h</th>
-                    <th className="text-right text-[#888] text-xs font-medium py-3 px-2 hidden sm:table-cell">Volume</th>
-                    <th className="text-right text-[#888] text-xs font-medium py-3 px-2 hidden md:table-cell">Liquidity</th>
-                    <th className="text-right text-[#888] text-xs font-medium py-3 px-2">Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {trending.map((token) => (
-                    <tr key={token.address || token.symbol} className="border-b border-[#2A2A2A]/50 hover:bg-[#1E1E1E] transition-colors cursor-pointer">
-                      <td className="py-3 px-2">
-                        <div className="flex items-center gap-2">
-                          {token.imageUrl ? (
-                            <img src={token.imageUrl} alt="" className="w-7 h-7 rounded-full" />
-                          ) : (
-                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#F5D90A]/20 to-[#F97316]/20 flex items-center justify-center text-[10px] font-bold text-[#F5D90A]">{token.symbol?.slice(0, 2)}</div>
-                          )}
-                          <div>
-                            <span className="text-white text-sm font-medium block truncate max-w-[100px]">{token.name}</span>
-                            <span className="text-[#888] text-[10px]">{token.symbol} · {getChainLabel(token.chain)}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-2 text-right text-white text-sm">{token.price}</td>
-                      <td className={`py-3 px-2 text-right text-sm font-medium ${token.positive ? "text-[#22C55E]" : "text-[#FF4444]"}`}>
-                        {token.positive ? "+" : ""}{token.priceChange24h?.toFixed(1)}%
-                      </td>
-                      <td className="py-3 px-2 text-right text-[#888] text-sm hidden sm:table-cell">{formatCurrency(token.volume24h)}</td>
-                      <td className="py-3 px-2 text-right text-[#888] text-sm hidden md:table-cell">{formatCurrency(token.liquidity)}</td>
-                      <td className="py-3 px-2 text-right">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${token.alphaScore >= 8 ? "bg-[#22C55E]/10 text-[#22C55E]" : token.alphaScore >= 7 ? "bg-[#F5D90A]/10 text-[#F5D90A]" : "bg-[#F97316]/10 text-[#F97316]"}`}>
-                          <RiStarLine className="text-[10px]" />{token.alphaScore}
-                        </span>
-                      </td>
+            <>
+              {/* Desktop/Tablet table */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full min-w-[500px]">
+                  <thead>
+                    <tr className="border-b border-[#2A2A2A]">
+                      <th className="text-left text-[#888] text-xs font-medium py-3 px-2">Token</th>
+                      <th className="text-right text-[#888] text-xs font-medium py-3 px-2">Price</th>
+                      <th className="text-right text-[#888] text-xs font-medium py-3 px-2">24h</th>
+                      <th className="text-right text-[#888] text-xs font-medium py-3 px-2">Volume</th>
+                      <th className="text-right text-[#888] text-xs font-medium py-3 px-2 hidden md:table-cell">Liquidity</th>
+                      <th className="text-right text-[#888] text-xs font-medium py-3 px-2">Score</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {trending.map((token) => (
+                      <tr key={token.address || token.symbol} className="border-b border-[#2A2A2A]/50 hover:bg-[#1E1E1E] transition-colors cursor-pointer">
+                        <td className="py-3 px-2">
+                          <div className="flex items-center gap-2">
+                            {token.imageUrl ? (
+                              <img src={token.imageUrl} alt="" className="w-7 h-7 rounded-full" />
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#F5D90A]/20 to-[#F97316]/20 flex items-center justify-center text-[10px] font-bold text-[#F5D90A]">{token.symbol?.slice(0, 2)}</div>
+                            )}
+                            <div>
+                              <span className="text-white text-sm font-medium block truncate max-w-[100px]">{token.name}</span>
+                              <span className="text-[#888] text-[10px]">{token.symbol} · {getChainLabel(token.chain)}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 text-right text-white text-sm">{token.price}</td>
+                        <td className={`py-3 px-2 text-right text-sm font-medium ${token.positive ? "text-[#22C55E]" : "text-[#FF4444]"}`}>
+                          {token.positive ? "+" : ""}{token.priceChange24h?.toFixed(1)}%
+                        </td>
+                        <td className="py-3 px-2 text-right text-[#888] text-sm">{formatCurrency(token.volume24h)}</td>
+                        <td className="py-3 px-2 text-right text-[#888] text-sm hidden md:table-cell">{formatCurrency(token.liquidity)}</td>
+                        <td className="py-3 px-2 text-right">
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${token.alphaScore >= 8 ? "bg-[#22C55E]/10 text-[#22C55E]" : token.alphaScore >= 7 ? "bg-[#F5D90A]/10 text-[#F5D90A]" : "bg-[#F97316]/10 text-[#F97316]"}`}>
+                            <RiStarLine className="text-[10px]" />{token.alphaScore}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile card list */}
+              <div className="sm:hidden space-y-2">
+                {trending.map((token) => (
+                  <div key={token.address || token.symbol} className="flex items-center justify-between p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]/50">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {token.imageUrl ? (
+                        <img src={token.imageUrl} alt="" className="w-8 h-8 rounded-full shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F5D90A]/20 to-[#F97316]/20 flex items-center justify-center text-[10px] font-bold text-[#F5D90A] shrink-0">{token.symbol?.slice(0, 2)}</div>
+                      )}
+                      <div className="min-w-0">
+                        <span className="text-white text-sm font-medium block truncate">{token.name}</span>
+                        <span className="text-[#888] text-[10px]">{token.symbol} · {getChainLabel(token.chain)}</span>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0 ml-2">
+                      <span className="text-white text-sm font-medium block">{token.price}</span>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <span className={`text-xs font-medium ${token.positive ? "text-[#22C55E]" : "text-[#FF4444]"}`}>
+                          {token.positive ? "+" : ""}{token.priceChange24h?.toFixed(1)}%
+                        </span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${token.alphaScore >= 8 ? "bg-[#22C55E]/10 text-[#22C55E]" : token.alphaScore >= 7 ? "bg-[#F5D90A]/10 text-[#F5D90A]" : "bg-[#F97316]/10 text-[#F97316]"}`}>
+                          {token.alphaScore}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </motion.div>
 
-        {/* Activity Log */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515]">
-          <h3 className="text-white font-semibold text-lg mb-4">Recent Activity</h3>
-          {recentHistory.length === 0 ? (
-            <p className="text-[#888] text-sm text-center py-8">No activity yet. Complete quests to get started!</p>
-          ) : (
-            <div className="space-y-3">
-              {recentHistory.map((entry, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]">
-                  <div className="w-8 h-8 rounded-lg bg-[#0B0B0B] flex items-center justify-center shrink-0 mt-0.5">
-                    <ActivityIcon type={entry.type} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-medium truncate">{entry.reason}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`text-xs font-semibold ${entry.type === "earn" ? "text-[#22C55E]" : "text-[#F97316]"}`}>
-                        {entry.type === "earn" ? "+" : "-"}{entry.amount} ASCP
-                      </span>
+        {/* Right column: Activity + Token Radar */}
+        <div className="flex flex-col gap-6">
+          {/* Activity Log */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515] flex-1">
+            <h3 className="text-white font-semibold text-lg mb-4">Recent Activity</h3>
+            {recentHistory.length === 0 ? (
+              <p className="text-[#888] text-sm text-center py-8">No activity yet. Complete quests to get started!</p>
+            ) : (
+              <div className="space-y-3">
+                {recentHistory.map((entry, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[#1E1E1E] border border-[#2A2A2A]">
+                    <div className="w-8 h-8 rounded-lg bg-[#0B0B0B] flex items-center justify-center shrink-0 mt-0.5">
+                      <ActivityIcon type={entry.type} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium truncate">{entry.reason}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-xs font-semibold ${entry.type === "earn" ? "text-[#22C55E]" : "text-[#F97316]"}`}>
+                          {entry.type === "earn" ? "+" : "-"}{entry.amount} ASCP
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+
+          {/* Token Radar */}
+          {!trendingLoading && trending.length >= 3 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="p-5 rounded-2xl border border-[#2A2A2A] bg-[#151515] relative overflow-hidden flex-1">
+              <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#A855F7]/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative z-10">
+                <h3 className="text-white font-semibold mb-1">Token Radar</h3>
+                <p className="text-[#888] text-xs mb-3">Top 5 trending comparison</p>
+              </div>
+              <div className="relative z-10" style={{ height: 220 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                    <PolarGrid stroke="#2A2A2A" />
+                    <PolarAngleAxis dataKey="name" tick={{ fill: "#ccc", fontSize: 10 }} />
+                    <PolarRadiusAxis tick={false} domain={[0, 100]} axisLine={false} />
+                    <Radar name="Volume" dataKey="Volume" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.15} />
+                    <Radar name="Liquidity" dataKey="Liquidity" stroke="#A855F7" fill="#A855F7" fillOpacity={0.15} />
+                    <Radar name="Score" dataKey="Score" stroke="#F5D90A" fill="#F5D90A" fillOpacity={0.15} />
+                    <Radar name="Momentum" dataKey="Momentum" stroke="#22C55E" fill="#22C55E" fillOpacity={0.15} />
+                    <Tooltip content={<CustomChartTooltip />} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════
@@ -466,37 +527,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ═══════════════════════════════════════════
-          TOKEN RADAR - Multi-dimension comparison
-          ═══════════════════════════════════════════ */}
-      {!trendingLoading && trending.length >= 3 && (
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1.0 }} className="relative p-6 rounded-2xl border border-[#2A2A2A] bg-[#151515] overflow-hidden">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-[#A855F7]/5 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex items-center gap-3 mb-6 relative z-10">
-            <div>
-              <h3 className="text-white font-semibold text-lg">Token Radar</h3>
-              <p className="text-[#888] text-sm">Multi-dimension comparison of top 5 trending tokens</p>
-            </div>
-          </div>
-
-          <div className="relative z-10" style={{ height: 340 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                <PolarGrid stroke="#2A2A2A" />
-                <PolarAngleAxis dataKey="name" tick={{ fill: "#ccc", fontSize: 12 }} />
-                <PolarRadiusAxis tick={{ fill: "#555", fontSize: 10 }} domain={[0, 100]} axisLine={false} />
-                <Radar name="Volume" dataKey="Volume" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.15} />
-                <Radar name="Liquidity" dataKey="Liquidity" stroke="#A855F7" fill="#A855F7" fillOpacity={0.15} />
-                <Radar name="Score" dataKey="Score" stroke="#F5D90A" fill="#F5D90A" fillOpacity={0.15} />
-                <Radar name="Momentum" dataKey="Momentum" stroke="#22C55E" fill="#22C55E" fillOpacity={0.15} />
-                <Legend wrapperStyle={{ paddingTop: 10 }} formatter={(value) => <span style={{ color: "#ccc", fontSize: 12 }}>{value}</span>} />
-                <Tooltip content={<CustomChartTooltip />} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-      )}
 
       {/* ───── Quick Actions ───── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

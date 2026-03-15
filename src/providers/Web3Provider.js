@@ -2,14 +2,14 @@
 
 import { RainbowKitProvider, getDefaultConfig, darkTheme } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { bsc } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
 
 const config = getDefaultConfig({
   appName: "AlphaScope",
   projectId: "alphascope-demo-project-id",
-  chains: [mainnet],
+  chains: [bsc],
   ssr: true,
 });
 

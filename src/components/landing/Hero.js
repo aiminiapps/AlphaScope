@@ -87,7 +87,7 @@ export default function Hero() {
             href="/app"
             className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-b from-[#F5D90A] to-[#E5C90A] text-[#0B0B0B] rounded-xl font-bold text-base shadow-[0_0_40px_rgba(245,217,10,0.2)] hover:shadow-[0_0_60px_rgba(245,217,10,0.4)] hover:-translate-y-1 transition-all duration-300"
           >
-            <RiRocketLine className="text-lg transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+            <RiRocketLine className="text-lg transition-transform group-hover:translate group-hover:-translate-y-1" />
             Launch App
           </Link>
           <Link

@@ -59,7 +59,7 @@ export default function Hero() {
         >
           <span className="text-white drop-shadow-lg">Discover Alpha</span>
           <br />
-          <span className="bg-gradient-to-r from-[#FFF] via-[#F5D90A] to-[#F97316] text-transparent bg-clip-text drop-shadow-[0_0_30px_rgba(245,217,10,0.2)]">
+          <span className=" text-[#F5D90A]/80">
             Before Everyone Else
           </span>
         </motion.h1>

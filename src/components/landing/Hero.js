@@ -72,7 +72,7 @@ export default function Hero() {
           className="text-lg md:text-xl text-[#888] max-w-2xl mx-auto mb-10 leading-relaxed font-light"
         >
           AlphaScope uses AI to scan blockchain data, detect hidden gems, and
-          track smart wallets — giving you the edge to find opportunities before
+          track smart wallets giving you the edge to find opportunities before
           they trend.
         </motion.p>
 

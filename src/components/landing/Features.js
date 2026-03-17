@@ -89,13 +89,6 @@ function AnalyzerVisual() {
           </span>
         </motion.div>
       </div>
-
-      {/* Scanning sweep */}
-      <motion.div
-        animate={{ x: ["-100%", "400%"] }}
-        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-        className="absolute top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#F5D90A]/30 to-transparent"
-      />
     </div>
   );
 }

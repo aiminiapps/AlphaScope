@@ -376,11 +376,8 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="py-24 relative overflow-hidden bg-[#0B0B0B]"
+      className="py-16 relative overflow-hidden bg-[#0B0B0B]"
     >
-      {/* Background glows */}
-      <div className="absolute top-40 left-0 w-[500px] h-[500px] bg-[#F5D90A]/[0.03] rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-20 right-0 w-[500px] h-[500px] bg-[#A855F7]/[0.03] rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section header */}
@@ -391,9 +388,6 @@ export default function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-sm text-[#F5D90A] font-semibold uppercase tracking-wider">
-            Core Features
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold text-white mt-3">
             Your Unfair Advantage
           </h2>

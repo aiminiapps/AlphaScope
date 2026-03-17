@@ -531,28 +531,6 @@ export default function Features() {
               </p>
             </div>
           </motion.div>
-
-          {/* ── Card 6 · Token Economy (bottom-left, 4 cols) ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="md:col-span-4 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F5D90A]/20 transition-colors duration-500"
-          >
-            <div className="h-[200px] relative">
-              <TokenVisual />
-            </div>
-            <div className="p-7 pt-2">
-              <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
-                <RiCoinLine className="text-[#F5D90A]" /> ASCP Token Economy
-              </h3>
-              <p className="text-[#666] text-sm leading-relaxed">
-                Earn ASCP tokens by completing quests, then spend them to unlock
-                premium AI reports and advanced analytics features.
-              </p>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

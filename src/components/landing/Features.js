@@ -385,54 +385,6 @@ function ChartVisual() {
   );
 }
 
-function TokenVisual() {
-  return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      {/* Rotating coin */}
-      <div className="relative">
-        <motion.div
-          animate={{ rotateY: [0, 360] }}
-          transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-[#F5D90A] to-[#F97316] flex items-center justify-center shadow-[0_0_60px_rgba(245,217,10,0.2)]"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          <span className="text-[#0B0B0B] text-2xl font-black tracking-tighter">A</span>
-        </motion.div>
-
-        {/* Orbiting particles */}
-        {[0, 72, 144, 216, 288].map((deg, i) => (
-          <motion.div
-            key={i}
-            animate={{ rotate: [deg, deg + 360] }}
-            transition={{ repeat: Infinity, duration: 10 + i * 2, ease: "linear" }}
-            className="absolute inset-[-24px]"
-            style={{ transformOrigin: "center" }}
-          >
-            <motion.div
-              animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
-              transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }}
-              className="absolute top-0 left-1/2 w-1.5 h-1.5 rounded-full bg-[#F5D90A]"
-            />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Stats flanking the coin */}
-      <div className="absolute left-4 md:left-8 flex flex-col gap-2">
-        <motion.div {...pulse(0)} className="text-right">
-          <div className="text-[9px] text-[#555] font-mono">BALANCE</div>
-          <div className="text-white text-sm font-bold">5,000</div>
-        </motion.div>
-      </div>
-      <div className="absolute right-4 md:right-8 flex flex-col gap-2">
-        <motion.div {...pulse(1)} className="text-left">
-          <div className="text-[9px] text-[#555] font-mono">EARNED</div>
-          <div className="text-[#22C55E] text-sm font-bold">+1,200</div>
-        </motion.div>
-      </div>
-    </div>
-  );
-}
 
 /* ─── MAIN COMPONENT ─── */
 export default function Features() {

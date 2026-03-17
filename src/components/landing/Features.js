@@ -501,18 +501,17 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="md:col-span-2 md:row-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#22C55E]/20 transition-colors duration-500"
+            className="md:col-span-2 md:row-span-1 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#22C55E]/20 transition-colors duration-500"
           >
-            <div className="flex-1 min-h-[230px] relative">
+            <div className="flex-1 min-h-[200px] relative">
               <ChartVisual />
             </div>
-            <div className="p-7 pt-2">
+            <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
                 <RiLineChartLine className="text-[#22C55E]" /> Advanced Tracking
               </h3>
               <p className="text-[#666] text-sm leading-relaxed">
-                Real-time charts, automated metrics, and comprehensive volume
-                tracking built directly into the platform.
+                Real-time charts, and comprehensive volume tracking built directly into the platform.
               </p>
             </div>
           </motion.div>

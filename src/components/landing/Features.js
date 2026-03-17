@@ -1,16 +1,452 @@
 "use client";
 
 import { motion } from "motion/react";
-import { RiSearchEyeLine, RiVipDiamondLine, RiWallet3Line, RiNotification3Line, RiLineChartLine } from "react-icons/ri";
+import {
+  RiSearchEyeLine,
+  RiVipDiamondLine,
+  RiWallet3Line,
+  RiNotification3Line,
+  RiLineChartLine,
+  RiCoinLine,
+} from "react-icons/ri";
 
+/* ─── Reusable micro-animation helpers ─── */
+const float = (delay = 0) => ({
+  animate: { y: [0, -8, 0] },
+  transition: { repeat: Infinity, duration: 4, delay, ease: "easeInOut" },
+});
+
+const pulse = (delay = 0) => ({
+  animate: { opacity: [0.4, 1, 0.4] },
+  transition: { repeat: Infinity, duration: 3, delay, ease: "easeInOut" },
+});
+
+/* ─── Sub-components for card visuals ─── */
+
+function AnalyzerVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* Glass analysis window */}
+      <div className="w-[85%] max-w-[260px] rounded-2xl bg-[#111]/80 border border-[#1E1E1E] p-4 backdrop-blur-sm shadow-2xl">
+        {/* Window dots */}
+        <div className="flex gap-1.5 mb-4">
+          <div className="w-2 h-2 rounded-full bg-[#FF4444]/60" />
+          <div className="w-2 h-2 rounded-full bg-[#F5D90A]/60" />
+          <div className="w-2 h-2 rounded-full bg-[#22C55E]/60" />
+        </div>
+
+        {/* Search bar with typing cursor */}
+        <div className="h-8 rounded-lg bg-[#0A0A0A] border border-[#222] flex items-center px-3 mb-4">
+          <RiSearchEyeLine className="text-[#555] text-sm mr-2 shrink-0" />
+          <motion.div
+            animate={{ width: ["0%", "60%", "60%", "0%"] }}
+            transition={{ repeat: Infinity, duration: 5, times: [0, 0.3, 0.7, 1] }}
+            className="h-1.5 bg-[#F5D90A]/60 rounded-full"
+          />
+          <motion.div
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="w-0.5 h-3.5 bg-[#F5D90A] ml-1 rounded-full"
+          />
+        </div>
+
+        {/* Analysis bars */}
+        <div className="space-y-2.5">
+          {[
+            { label: "Risk", w: "75%", color: "#22C55E", delay: 0.5 },
+            { label: "Liquidity", w: "60%", color: "#3B82F6", delay: 0.8 },
+            { label: "Volume", w: "85%", color: "#A855F7", delay: 1.1 },
+          ].map((bar) => (
+            <div key={bar.label} className="flex items-center gap-2">
+              <span className="text-[9px] text-[#555] w-12 shrink-0 font-mono">
+                {bar.label}
+              </span>
+              <div className="flex-1 h-1.5 bg-[#1A1A1A] rounded-full overflow-hidden">
+                <motion.div
+                  animate={{ width: ["0%", bar.w, bar.w, "0%"] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 4,
+                    delay: bar.delay,
+                    times: [0, 0.2, 0.8, 1],
+                  }}
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: bar.color }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Score badge */}
+        <motion.div
+          animate={{ opacity: [0, 0, 1, 1, 0], scale: [0.8, 0.8, 1, 1, 0.8] }}
+          transition={{ repeat: Infinity, duration: 5, times: [0, 0.3, 0.4, 0.85, 1] }}
+          className="mt-4 mx-auto w-fit px-4 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20"
+        >
+          <span className="text-[#22C55E] text-[10px] font-bold tracking-wider">
+            SCORE: 8.7 / 10
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Scanning sweep */}
+      <motion.div
+        animate={{ x: ["-100%", "400%"] }}
+        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+        className="absolute top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#F5D90A]/30 to-transparent"
+      />
+    </div>
+  );
+}
+
+function GemScannerVisual() {
+  const gems = [
+    { name: "GEM", score: "9.2", color: "#F5D90A", dy: 0 },
+    { name: "ALPHA", score: "8.6", color: "#3B82F6", dy: 20 },
+    { name: "MOON", score: "7.9", color: "#A855F7", dy: 40 },
+  ];
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-[240px] h-[180px]">
+        {gems.map((gem, i) => (
+          <motion.div
+            key={gem.name}
+            {...float(i * 0.8)}
+            className="absolute w-full rounded-xl bg-[#111]/90 border border-[#1E1E1E] p-3.5 backdrop-blur-sm shadow-xl"
+            style={{
+              top: gem.dy,
+              zIndex: 10 - i,
+              left: i * 8,
+              right: i * 8,
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ repeat: Infinity, duration: 8 + i * 4, ease: "linear" }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ background: `${gem.color}15`, border: `1px solid ${gem.color}30` }}
+                >
+                  <RiVipDiamondLine style={{ color: gem.color }} className="text-sm" />
+                </motion.div>
+                <div>
+                  <div className="text-white text-xs font-bold">${gem.name}</div>
+                  <div className="text-[#555] text-[9px]">Just listed</div>
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <motion.span
+                  {...pulse(i * 0.5)}
+                  className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                  style={{
+                    color: gem.color,
+                    backgroundColor: `${gem.color}15`,
+                  }}
+                >
+                  {gem.score}
+                </motion.span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Glow behind cards */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[#F5D90A]/5 rounded-full blur-[60px]" />
+    </div>
+  );
+}
+
+function WalletVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-36 h-36">
+        {/* Orbit rings */}
+        <div className="absolute inset-0 border border-[#1E1E1E] rounded-full" />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+          className="absolute inset-[-16px] border border-[#1E1E1E]/40 rounded-full border-dashed"
+        />
+
+        {/* Center node */}
+        <div className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-[#111] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.15)] z-10">
+          <RiWallet3Line className="text-[#A855F7] text-xl" />
+        </div>
+
+        {/* Orbiting wallets - ring 1 */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+          className="absolute inset-0"
+        >
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+            <motion.div
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-5 h-5 rounded-full bg-[#22C55E] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(34,197,94,0.5)]"
+            />
+          </div>
+          <div className="absolute -bottom-1 left-2">
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2.5, delay: 0.5 }}
+              className="w-4 h-4 rounded-full bg-[#F5D90A] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(245,217,10,0.5)]"
+            />
+          </div>
+          <div className="absolute -bottom-1 right-2">
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 3, delay: 1 }}
+              className="w-3.5 h-3.5 rounded-full bg-[#3B82F6] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+            />
+          </div>
+        </motion.div>
+
+        {/* Orbiting wallets - ring 2 (counter-rotate) */}
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ repeat: Infinity, duration: 14, ease: "linear" }}
+          className="absolute inset-[-16px]"
+        >
+          <div className="absolute top-0 right-4">
+            <div className="w-3 h-3 rounded-full bg-[#F97316] border-2 border-[#0B0B0B] shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
+          </div>
+          <div className="absolute bottom-2 left-0">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444] border-2 border-[#0B0B0B]" />
+          </div>
+        </motion.div>
+
+        {/* Subtle connection lines via SVG */}
+        <svg className="absolute inset-[-20px] w-[calc(100%+40px)] h-[calc(100%+40px)] pointer-events-none">
+          <motion.circle
+            cx="50%"
+            cy="50%"
+            r="35%"
+            fill="none"
+            stroke="#A855F7"
+            strokeWidth="0.5"
+            strokeDasharray="4 6"
+            animate={{ strokeDashoffset: [0, -40] }}
+            transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function AlertsVisual() {
+  const alerts = [
+    { color: "#22C55E", icon: "🐋", text: "Whale bought 50 ETH", sub: "Just now" },
+    { color: "#F97316", icon: "🔓", text: "Liquidity unlocked", sub: "2m ago" },
+    { color: "#3B82F6", icon: "💎", text: "New gem detected", sub: "5m ago" },
+  ];
+  return (
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <div className="relative w-[90%] max-w-[240px] h-[160px]">
+        {alerts.map((alert, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              y: [30, 0, 0, -30],
+              opacity: [0, 1, 1, 0],
+              scale: [0.92, 1, 1, 0.92],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 6,
+              delay: i * 2,
+              times: [0, 0.08, 0.92, 1],
+            }}
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-xl bg-[#111]/90 border border-[#1E1E1E] backdrop-blur-sm p-3 flex items-center gap-3 shadow-xl"
+          >
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-base shrink-0"
+              style={{ backgroundColor: `${alert.color}15` }}
+            >
+              {alert.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-white text-xs font-semibold truncate">{alert.text}</div>
+              <div className="text-[#555] text-[10px] mt-0.5">{alert.sub}</div>
+            </div>
+            <div
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ backgroundColor: alert.color, boxShadow: `0 0 6px ${alert.color}` }}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChartVisual() {
+  return (
+    <div className="relative w-full h-full flex flex-col items-center justify-center gap-3 px-2">
+      {/* Price header */}
+      <div className="w-full max-w-[260px] flex items-end justify-between px-1">
+        <div>
+          <div className="text-[#555] text-[9px] font-mono uppercase">Price</div>
+          <motion.div
+            animate={{ opacity: [0.6, 1, 0.6] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-white text-xl font-bold tracking-tight"
+          >
+            $0.0847
+          </motion.div>
+        </div>
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ repeat: Infinity, duration: 3 }}
+          className="text-[#22C55E] text-xs font-bold bg-[#22C55E]/10 px-2 py-1 rounded-md"
+        >
+          +24.6%
+        </motion.div>
+      </div>
+
+      {/* SVG Chart area */}
+      <div className="w-full max-w-[260px] h-[120px] bg-[#0A0A0A] border border-[#1E1E1E] rounded-xl relative overflow-hidden p-2">
+        <svg
+          className="w-full h-full overflow-visible"
+          viewBox="0 0 200 60"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#22C55E" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {/* Grid lines */}
+          {[15, 30, 45].map((y) => (
+            <line key={y} x1="0" y1={y} x2="200" y2={y} stroke="#1E1E1E" strokeWidth="0.5" />
+          ))}
+          {/* Area fill */}
+          <motion.path
+            d="M0,50 C20,45 30,30 50,35 C70,40 80,20 100,25 C120,30 130,10 150,15 C170,20 180,8 200,12 L200,60 L0,60 Z"
+            fill="url(#chartFill)"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
+          />
+          {/* Line */}
+          <motion.path
+            d="M0,50 C20,45 30,30 50,35 C70,40 80,20 100,25 C120,30 130,10 150,15 C170,20 180,8 200,12"
+            fill="none"
+            stroke="#22C55E"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: [0, 1] }}
+            transition={{ duration: 3, repeat: Infinity, repeatDelay: 3, ease: "easeOut" }}
+          />
+          {/* Dot at end */}
+          <motion.circle
+            cx="200"
+            cy="12"
+            r="3"
+            fill="#22C55E"
+            animate={{ opacity: [0, 0, 1, 1, 0], scale: [0, 0, 1, 1.5, 0] }}
+            transition={{ duration: 6, repeat: Infinity, times: [0, 0.45, 0.5, 0.9, 1] }}
+          />
+        </svg>
+
+        {/* Scanning line */}
+        <motion.div
+          animate={{ left: ["-5%", "105%"] }}
+          transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+          className="absolute top-0 bottom-0 w-px"
+          style={{
+            background: "linear-gradient(to bottom, transparent, #22C55E40, transparent)",
+            boxShadow: "0 0 8px #22C55E40",
+          }}
+        />
+      </div>
+
+      {/* Volume bars */}
+      <div className="w-full max-w-[260px] flex gap-[2px] h-5 items-end px-1">
+        {Array.from({ length: 24 }).map((_, i) => {
+          const h = 4 + Math.random() * 16;
+          return (
+            <motion.div
+              key={i}
+              animate={{ height: [h * 0.3, h, h * 0.5, h * 0.8] }}
+              transition={{ repeat: Infinity, duration: 4, delay: i * 0.15 }}
+              className="flex-1 rounded-sm bg-[#22C55E]/30"
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TokenVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* Rotating coin */}
+      <div className="relative">
+        <motion.div
+          animate={{ rotateY: [0, 360] }}
+          transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-[#F5D90A] to-[#F97316] flex items-center justify-center shadow-[0_0_60px_rgba(245,217,10,0.2)]"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          <span className="text-[#0B0B0B] text-2xl font-black tracking-tighter">A</span>
+        </motion.div>
+
+        {/* Orbiting particles */}
+        {[0, 72, 144, 216, 288].map((deg, i) => (
+          <motion.div
+            key={i}
+            animate={{ rotate: [deg, deg + 360] }}
+            transition={{ repeat: Infinity, duration: 10 + i * 2, ease: "linear" }}
+            className="absolute inset-[-24px]"
+            style={{ transformOrigin: "center" }}
+          >
+            <motion.div
+              animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+              transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }}
+              className="absolute top-0 left-1/2 w-1.5 h-1.5 rounded-full bg-[#F5D90A]"
+            />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Stats flanking the coin */}
+      <div className="absolute left-4 md:left-8 flex flex-col gap-2">
+        <motion.div {...pulse(0)} className="text-right">
+          <div className="text-[9px] text-[#555] font-mono">BALANCE</div>
+          <div className="text-white text-sm font-bold">5,000</div>
+        </motion.div>
+      </div>
+      <div className="absolute right-4 md:right-8 flex flex-col gap-2">
+        <motion.div {...pulse(1)} className="text-left">
+          <div className="text-[9px] text-[#555] font-mono">EARNED</div>
+          <div className="text-[#22C55E] text-sm font-bold">+1,200</div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── MAIN COMPONENT ─── */
 export default function Features() {
   return (
-    <section id="features" className="py-24 relative overflow-hidden bg-[#0B0B0B]">
-      {/* Background Glows */}
-      <div className="absolute top-40 left-0 w-[500px] h-[500px] bg-[#F5D90A]/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-40 right-0 w-[500px] h-[500px] bg-[#3B82F6]/5 rounded-full blur-[120px] pointer-events-none" />
+    <section
+      id="features"
+      className="py-24 relative overflow-hidden bg-[#0B0B0B]"
+    >
+      {/* Background glows */}
+      <div className="absolute top-40 left-0 w-[500px] h-[500px] bg-[#F5D90A]/[0.03] rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-20 right-0 w-[500px] h-[500px] bg-[#A855F7]/[0.03] rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -25,259 +461,146 @@ export default function Features() {
             Your Unfair Advantage
           </h2>
           <p className="text-[#888] mt-4 max-w-xl mx-auto">
-            Everything you need to find, analyze, and act on crypto opportunities before the crowd.
+            Everything you need to find, analyze, and act on crypto opportunities
+            before the crowd.
           </p>
         </motion.div>
 
-        {/* BENTO GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[420px]">
-          
-          {/* 1. AI Token Analyzer (Top Left - 2 cols) */}
+        {/* ═══════ BENTO GRID ═══════ */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-5">
+          {/* ── Card 1 · AI Token Analyzer (top-left, 3 cols) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="md:col-span-2 rounded-3xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#0D0D0D] p-8 flex flex-col relative overflow-hidden group"
+            className="md:col-span-3 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F5D90A]/20 transition-colors duration-500"
           >
-            <div className="flex-1 w-full flex items-center justify-center relative">
-               {/* Animation Container */}
-               <div className="w-full max-w-[200px] space-y-3">
-                  <motion.div 
-                    animate={{ y: [0, -4, 0] }} 
-                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                    className="h-10 rounded-full bg-[#1A1A1A] border border-[#2A2A2A] flex items-center px-4"
-                  >
-                     <RiSearchEyeLine className="text-[#888] mr-2" />
-                     <motion.div 
-                       animate={{ width: ["0%", "40%", "40%", "0%"] }} 
-                       transition={{ repeat: Infinity, duration: 4, times: [0, 0.2, 0.8, 1] }} 
-                       className="h-1.5 bg-[#F5D90A] rounded-full"
-                     />
-                  </motion.div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <motion.div 
-                      animate={{ opacity: [0.5, 1, 0.5] }} 
-                      transition={{ repeat: Infinity, duration: 2, delay: 1 }} 
-                      className="h-16 rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A] p-2 flex flex-col justify-end"
-                    >
-                      <div className="h-6 w-full rounded-md bg-[#22C55E]/20 relative overflow-hidden">
-                         <motion.div animate={{ height: ["20%", "80%", "20%"] }} transition={{ repeat: Infinity, duration: 2.5 }} className="absolute bottom-0 left-0 w-full bg-[#22C55E] opacity-50" />
-                      </div>
-                    </motion.div>
-                    <motion.div 
-                      animate={{ opacity: [0.5, 1, 0.5] }} 
-                      transition={{ repeat: Infinity, duration: 2, delay: 1.5 }} 
-                      className="h-16 rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A] p-2 flex flex-col justify-end"
-                    >
-                      <div className="h-6 w-full rounded-md bg-[#EF4444]/20 relative overflow-hidden">
-                         <motion.div animate={{ height: ["60%", "30%", "60%"] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute bottom-0 left-0 w-full bg-[#EF4444] opacity-50" />
-                      </div>
-                    </motion.div>
-                  </div>
-               </div>
+            <div className="h-[260px] relative">
+              <AnalyzerVisual />
             </div>
-            <div className="mt-auto pt-6 border-t border-[#2A2A2A]/50">
+            <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-xl mb-2 flex items-center gap-2">
                 <RiSearchEyeLine className="text-[#F5D90A]" /> AI Token Analyzer
               </h3>
-              <p className="text-[#888] text-sm leading-relaxed">
-                Input any contract and get instant AI-generated research, holder patterns, and risk analysis.
+              <p className="text-[#666] text-sm leading-relaxed">
+                Input any contract and get instant AI-generated research with
+                liquidity analysis, holder patterns, and risk scores.
               </p>
             </div>
           </motion.div>
 
-          {/* 2. Hidden Gem Scanner (Top Middle - 2 cols) */}
+          {/* ── Card 2 · Hidden Gem Scanner (top-right, 3 cols) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="md:col-span-2 rounded-3xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#0D0D0D] p-8 flex flex-col relative overflow-hidden group"
+            className="md:col-span-3 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#3B82F6]/20 transition-colors duration-500"
           >
-            <div className="flex-1 w-full relative">
-              {/* Animated Cards Stacking */}
-              <div className="absolute inset-x-0 inset-y-4 flex flex-col items-center justify-center">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ 
-                      y: [i * 20, i * 20 - 15, i * 20],
-                      scale: [1 - i * 0.1, 1.05 - i * 0.1, 1 - i * 0.1],
-                      opacity: [1 - i * 0.3, 1 - i * 0.2, 1 - i * 0.3]
-                    }}
-                    transition={{ repeat: Infinity, duration: 3, delay: i * 0.5, ease: "easeInOut" }}
-                    className="w-full max-w-[220px] h-16 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl absolute flex items-center justify-between px-4 shadow-xl"
-                    style={{ zIndex: 10 - i, marginTop: i * 20 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#F5D90A] to-[#F97316] opacity-80" />
-                      <div className="w-16 h-2 rounded bg-[#333]" />
-                    </div>
-                    <div className="w-10 h-4 rounded-full bg-[#22C55E]/20 flex items-center justify-center">
-                       <div className="w-6 h-1 rounded bg-[#22C55E]" />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+            <div className="h-[260px] relative">
+              <GemScannerVisual />
             </div>
-            <div className="mt-auto pt-6 border-t border-[#2A2A2A]/50 relative z-20">
+            <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-xl mb-2 flex items-center gap-2">
-                <RiVipDiamondLine className="text-[#3B82F6]" /> Hidden Gem Tracker
+                <RiVipDiamondLine className="text-[#3B82F6]" /> Hidden Gem
+                Scanner
               </h3>
-              <p className="text-[#888] text-sm leading-relaxed">
-                Monitors new launches and surfaces low-cap tokens with strong traction and high Alpha Scores.
+              <p className="text-[#666] text-sm leading-relaxed">
+                Continuously monitors new launches and surfaces tokens with
+                unusual activity, strong traction, and high Alpha Scores.
               </p>
             </div>
           </motion.div>
 
-          {/* 3. Wallet Intelligence (Top Right - 2 cols) */}
+          {/* ── Card 3 · Wallet Intelligence (mid-left, 2 cols) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="md:col-span-2 rounded-3xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#0D0D0D] p-8 flex flex-col relative overflow-hidden group"
+            className="md:col-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#A855F7]/20 transition-colors duration-500"
           >
-            <div className="flex-1 w-full flex items-center justify-center relative">
-               <div className="relative w-40 h-40">
-                 {/* Center Node */}
-                 <div className="absolute inset-0 m-auto w-16 h-16 bg-[#1A1A1A] border-2 border-[#A855F7] rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.3)] z-10">
-                   <RiWallet3Line className="text-[#A855F7] text-2xl" />
-                 </div>
-                 {/* Orbit Rings */}
-                 <div className="absolute inset-0 border border-[#2A2A2A] rounded-full" />
-                 <div className="absolute inset-4 border border-[#2A2A2A]/50 rounded-full" />
-                 
-                 {/* Orbiting Wallets */}
-                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 10, ease: "linear" }} className="absolute inset-0">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#22C55E] rounded-full border-2 border-[#151515]" />
-                    <div className="absolute bottom-4 left-0 w-5 h-5 bg-[#F5D90A] rounded-full border-2 border-[#151515]" />
-                    <div className="absolute bottom-4 right-0 w-4 h-4 bg-[#3B82F6] rounded-full border-2 border-[#151515]" />
-                 </motion.div>
-               </div>
+            <div className="h-[220px] relative">
+              <WalletVisual />
             </div>
-            <div className="mt-auto pt-6 border-t border-[#2A2A2A]/50">
-              <h3 className="text-white font-bold text-xl mb-2 flex items-center gap-2">
+            <div className="p-7 pt-2">
+              <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
                 <RiWallet3Line className="text-[#A855F7]" /> Wallet Intelligence
               </h3>
-              <p className="text-[#888] text-sm leading-relaxed">
-                Track smart wallets. See what top-performing investors are buying before the market reacts.
+              <p className="text-[#666] text-sm leading-relaxed">
+                Track smart wallets. See what top investors are buying before the
+                market reacts.
               </p>
             </div>
           </motion.div>
 
-          {/* 4. Alpha Alerts (Bottom Left - 3 cols) */}
+          {/* ── Card 4 · Alpha Alerts (mid-center, 2 cols) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="md:col-span-3 rounded-3xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#0D0D0D] p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group"
+            className="md:col-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F97316]/20 transition-colors duration-500"
           >
-            <div className="flex-1 w-full order-2 md:order-1">
-              <h3 className="text-white font-bold text-2xl mb-3 flex items-center gap-2">
-                <RiNotification3Line className="text-[#F97316]" /> Real-Time Alerts
-              </h3>
-              <p className="text-[#888] text-base leading-relaxed mb-6">
-                Never miss a move. Get instant notifications for whale purchases, liquidity spikes, and smart money movements pushed directly to your dashboard.
-              </p>
+            <div className="h-[220px] relative">
+              <AlertsVisual />
             </div>
-            <div className="w-full md:w-1/2 h-48 relative order-1 md:order-2 flex items-center justify-center">
-               <div className="relative w-full max-w-[260px] h-full flex items-center">
-                  {/* Animating Toasts */}
-                  {[
-                    { color: "#22C55E", text: "Whale Buy: 50.2 ETH", time: "Just now" },
-                    { color: "#F97316", text: "Liquidity unlocked", time: "2m ago" },
-                    { color: "#3B82F6", text: "New trending gem", time: "5m ago" }
-                  ].map((toast, i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ 
-                        y: [-20, 0, 0, -20],
-                        opacity: [0, 1, 1, 0],
-                        scale: [0.95, 1, 1, 0.95]
-                      }}
-                      transition={{ 
-                        repeat: Infinity, 
-                        duration: 6, 
-                        delay: i * 2,
-                        times: [0, 0.1, 0.9, 1]
-                      }}
-                      className="absolute w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-4 shadow-2xl flex items-center gap-4"
-                      style={{ top: '50%', marginTop: '-36px' }}
-                    >
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${toast.color}20` }}>
-                        <RiNotification3Line style={{ color: toast.color }} className="text-lg" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-white text-sm font-bold">{toast.text}</div>
-                        <div className="text-[#555] text-xs">{toast.time}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-               </div>
+            <div className="p-7 pt-2">
+              <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
+                <RiNotification3Line className="text-[#F97316]" /> Real-Time
+                Alerts
+              </h3>
+              <p className="text-[#666] text-sm leading-relaxed">
+                Instant notifications for whale buys, liquidity spikes, and smart
+                money movements.
+              </p>
             </div>
           </motion.div>
 
-          {/* 5. Advanced Terminal (Bottom Right - 3 cols) */}
+          {/* ── Card 5 · Live Dashboard (mid-right, 2 cols, row-span-2) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="md:col-span-3 rounded-3xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#0D0D0D] p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group"
+            className="md:col-span-2 md:row-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#22C55E]/20 transition-colors duration-500"
           >
-            <div className="w-full md:w-1/2 h-48 relative flex items-center justify-center">
-               <div className="w-full max-w-[280px] h-32 bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 relative overflow-hidden">
-                 <div className="flex items-center justify-between mb-4">
-                   <div className="w-16 h-3 bg-[#333] rounded" />
-                   <div className="w-10 h-4 bg-[#22C55E]/20 rounded text-[9px] text-[#22C55E] flex items-center justify-center font-bold">+24%</div>
-                 </div>
-                 {/* Animated SVG Chart */}
-                 <svg className="w-full h-12 overflow-visible" viewBox="0 0 100 30" preserveAspectRatio="none">
-                    <motion.path 
-                      d="M0,30 Q10,10 20,20 T40,10 T60,25 T80,5 T100,10"
-                      fill="none"
-                      stroke="#22C55E"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.path 
-                      d="M0,30 Q10,10 20,20 T40,10 T60,25 T80,5 T100,10 L100,40 L0,40 Z"
-                      fill="url(#gradientChart)"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    />
-                    <defs>
-                      <linearGradient id="gradientChart" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#22C55E" stopOpacity="0.3" />
-                        <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                 </svg>
-                 
-                 {/* Scanning horizontal line */}
-                 <motion.div 
-                   animate={{ x: ["-100%", "300%"] }} 
-                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                   className="absolute top-0 bottom-0 w-px bg-white/20 shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-                 />
-               </div>
+            <div className="flex-1 min-h-[280px] relative">
+              <ChartVisual />
             </div>
-            <div className="flex-1 w-full">
-              <h3 className="text-white font-bold text-2xl mb-3 flex items-center gap-2">
+            <div className="p-7 pt-2">
+              <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
                 <RiLineChartLine className="text-[#22C55E]" /> Advanced Tracking
               </h3>
-              <p className="text-[#888] text-base leading-relaxed mb-6">
-                Stay updated on every token with real-time charts, automated metrics, and comprehensive volume tracking built directly into the platform.
+              <p className="text-[#666] text-sm leading-relaxed">
+                Real-time charts, automated metrics, and comprehensive volume
+                tracking built directly into the platform.
               </p>
             </div>
           </motion.div>
 
+          {/* ── Card 6 · Token Economy (bottom-left, 4 cols) ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="md:col-span-4 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F5D90A]/20 transition-colors duration-500"
+          >
+            <div className="h-[200px] relative">
+              <TokenVisual />
+            </div>
+            <div className="p-7 pt-2">
+              <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
+                <RiCoinLine className="text-[#F5D90A]" /> ASCP Token Economy
+              </h3>
+              <p className="text-[#666] text-sm leading-relaxed">
+                Earn ASCP tokens by completing quests, then spend them to unlock
+                premium AI reports and advanced analytics features.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

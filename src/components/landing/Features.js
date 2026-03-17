@@ -366,21 +366,6 @@ function ChartVisual() {
           }}
         />
       </div>
-
-      {/* Volume bars */}
-      <div className="w-full max-w-[260px] flex gap-[2px] h-5 items-end px-1">
-        {Array.from({ length: 24 }).map((_, i) => {
-          const h = 4 + Math.random() * 16;
-          return (
-            <motion.div
-              key={i}
-              animate={{ height: [h * 0.3, h, h * 0.5, h * 0.8] }}
-              transition={{ repeat: Infinity, duration: 4, delay: i * 0.15 }}
-              className="flex-1 rounded-sm bg-[#22C55E]/30"
-            />
-          );
-        })}
-      </div>
     </div>
   );
 }
@@ -518,7 +503,7 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="md:col-span-2 md:row-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#22C55E]/20 transition-colors duration-500"
           >
-            <div className="flex-1 min-h-[280px] relative">
+            <div className="flex-1 min-h-[230px] relative">
               <ChartVisual />
             </div>
             <div className="p-7 pt-2">

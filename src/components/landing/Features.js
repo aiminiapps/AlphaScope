@@ -10,7 +10,6 @@ import {
   RiCoinLine,
 } from "react-icons/ri";
 
-/* ─── Reusable micro-animation helpers ─── */
 const float = (delay = 0) => ({
   animate: { y: [0, -8, 0] },
   transition: { repeat: Infinity, duration: 4, delay, ease: "easeInOut" },
@@ -21,7 +20,6 @@ const pulse = (delay = 0) => ({
   transition: { repeat: Infinity, duration: 3, delay, ease: "easeInOut" },
 });
 
-/* ─── Sub-components for card visuals ─── */
 
 function AnalyzerVisual() {
   return (

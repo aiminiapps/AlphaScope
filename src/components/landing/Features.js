@@ -284,6 +284,7 @@ function AlertsVisual() {
     { color: "#F97316", icon: "🔓", text: "Liquidity unlocked", sub: "2m ago" },
     { color: "#3B82F6", icon: "💎", text: "New gem detected", sub: "5m ago" },
   ];
+
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       <div className="relative w-[90%] max-w-[240px] h-[160px]">
@@ -291,15 +292,18 @@ function AlertsVisual() {
           <motion.div
             key={i}
             animate={{
-              y: [30, 0, 0, -30],
-              opacity: [0, 1, 1, 0],
-              scale: [0.92, 1, 1, 0.92],
+              // The sequence: Enter -> Hold center -> Pushed up -> Hold secondary -> Exit out top -> Stay hidden
+              y: [40, 0, 0, -65, -65, -110, -110],
+              opacity: [0, 1, 1, 0.4, 0.4, 0, 0],
+              scale: [0.9, 1, 1, 0.95, 0.95, 0.9, 0.9],
+              zIndex: [3, 3, 3, 2, 2, 1, 1]
             }}
             transition={{
               repeat: Infinity,
               duration: 6,
-              delay: i * 2,
-              times: [0, 0.08, 0.92, 1],
+              delay: i * 2, // 2 second interval perfectly matches the 33% phase shifts in the times array
+              times: [0, 0.08, 0.33, 0.41, 0.66, 0.74, 1],
+              ease: "easeInOut",
             }}
             className="absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-xl bg-[#111]/90 border border-[#1E1E1E] backdrop-blur-sm p-3 flex items-center gap-3 shadow-xl"
           >
@@ -323,7 +327,6 @@ function AlertsVisual() {
     </div>
   );
 }
-
 function ChartVisual() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-3 px-2">

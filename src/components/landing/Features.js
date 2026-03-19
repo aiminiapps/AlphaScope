@@ -99,7 +99,7 @@ function GemScannerVisual() {
   ];
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-[240px] h-[180px]">
+      <div className="relative w-[240px] mt-10 h-[180px]">
         {gems.map((gem, i) => (
           <motion.div
             key={gem.name}
@@ -108,14 +108,14 @@ function GemScannerVisual() {
             style={{
               top: gem.dy,
               zIndex: 10 - i,
-              left: i * 8,
-              right: i * 8,
+              left: i * 12,
+              right: i * 10,
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <motion.div
-                  animate={{ rotate: [0, 360] }}
+                  // animate={{ rotate: [0, 360] }}
                   transition={{ repeat: Infinity, duration: 8 + i * 4, ease: "linear" }}
                   className="w-8 h-8 rounded-full flex items-center justify-center"
                   style={{ background: `${gem.color}15`, border: `1px solid ${gem.color}30` }}

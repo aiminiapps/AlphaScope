@@ -1,14 +1,15 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   RiSearchEyeLine,
   RiVipDiamondLine,
   RiWallet3Line,
   RiNotification3Line,
   RiLineChartLine,
-  RiCoinLine,
+  RiCheckLine, RiLoader4Line, RiLinkM
 } from "react-icons/ri";
+import { useState, useEffect } from "react";
 
 const float = (delay = 0) => ({
   animate: { y: [0, -8, 0] },
@@ -150,81 +151,129 @@ function GemScannerVisual() {
   );
 }
 
-function WalletVisual() {
+const WalletVisual = () => {
+  // States: 'idle' -> 'connecting' -> 'connected'
+  const [status, setStatus] = useState('idle');
+
+  // This effect simulates the connection process automatically
+  useEffect(() => {
+    let timeout1, timeout2, timeout3;
+
+    const runSequence = () => {
+      setStatus('idle');
+      timeout1 = setTimeout(() => setStatus('connecting'), 2000);
+      timeout2 = setTimeout(() => setStatus('connected'), 5000);
+      timeout3 = setTimeout(runSequence, 9000); // Loop back to start
+    };
+
+    runSequence();
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+    };
+  }, []);
+
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-36 h-36">
-        {/* Orbit rings */}
-        <div className="absolute inset-0 border border-[#1E1E1E] rounded-full" />
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-          className="absolute inset-[-16px] border border-[#1E1E1E]/40 rounded-full border-dashed"
-        />
-
-        {/* Center node */}
-        <div className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-[#111] border border-[#A855F7]/40 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.15)] z-10">
-          <RiWallet3Line className="text-[#A855F7] text-xl" />
-        </div>
-
-        {/* Orbiting wallets - ring 1 */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-          className="absolute inset-0"
-        >
-          <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+    // Outer container purely for centering in your preview
+    <div className="w-full min-h-[300px]  flex items-center justify-center font-sans">
+      
+      {/* The Morphing Container */}
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="relative overflow-hidden bg-[#0A0A0A]/90 backdrop-blur-xl border -mt-16 border-white/10 shadow-2xl flex flex-col justify-center"
+        style={{
+          borderRadius: 24,
+          // We set minimum widths to prevent it from getting too tiny
+          minWidth: status === 'idle' ? 160 : 200,
+        }}
+      >
+        <AnimatePresence mode="wait">
+          
+          {/* STATE 1: IDLE / CONNECT */}
+          {status === 'idle' && (
             <motion.div
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-5 h-5 rounded-full bg-[#22C55E] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(34,197,94,0.5)]"
-            />
-          </div>
-          <div className="absolute -bottom-1 left-2">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ repeat: Infinity, duration: 2.5, delay: 0.5 }}
-              className="w-4 h-4 rounded-full bg-[#F5D90A] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(245,217,10,0.5)]"
-            />
-          </div>
-          <div className="absolute -bottom-1 right-2">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ repeat: Infinity, duration: 3, delay: 1 }}
-              className="w-3.5 h-3.5 rounded-full bg-[#3B82F6] border-2 border-[#0B0B0B] shadow-[0_0_12px_rgba(59,130,246,0.5)]"
-            />
-          </div>
-        </motion.div>
+              key="idle"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+              transition={{ duration: 0.2 }}
+              className="px-5 py-3 flex items-center justify-center gap-2 cursor-pointer group"
+            >
+              <RiWallet3Line className="text-[#F3BA2F] text-lg group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium text-zinc-100 tracking-wide">
+                Connect Wallet
+              </span>
+            </motion.div>
+          )}
 
-        {/* Orbiting wallets - ring 2 (counter-rotate) */}
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ repeat: Infinity, duration: 14, ease: "linear" }}
-          className="absolute inset-[-16px]"
-        >
-          <div className="absolute top-0 right-4">
-            <div className="w-3 h-3 rounded-full bg-[#F97316] border-2 border-[#0B0B0B] shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
-          </div>
-          <div className="absolute bottom-2 left-0">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444] border-2 border-[#0B0B0B]" />
-          </div>
-        </motion.div>
+          {/* STATE 2: CONNECTING */}
+          {status === 'connecting' && (
+            <motion.div
+              key="connecting"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+              transition={{ duration: 0.2 }}
+              className="px-6 py-5 flex flex-col items-center justify-center gap-4"
+            >
+              <div className="relative flex items-center justify-center w-10 h-10">
+                {/* Soft pulsing glow behind spinner */}
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-[#F3BA2F] rounded-full blur-md"
+                />
+                <RiLoader4Line className="text-[#F3BA2F] text-2xl animate-spin relative z-10" />
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-sm font-semibold text-zinc-100">Connecting</span>
+                <span className="text-[11px] text-zinc-500 mt-0.5">Approve in wallet...</span>
+              </div>
+            </motion.div>
+          )}
 
-        {/* Subtle connection lines via SVG */}
-        <svg className="absolute inset-[-20px] w-[calc(100%+40px)] h-[calc(100%+40px)] pointer-events-none">
-          <motion.circle
-            cx="50%"
-            cy="50%"
-            r="35%"
-            fill="none"
-            stroke="#A855F7"
-            strokeWidth="0.5"
-            strokeDasharray="4 6"
-            animate={{ strokeDashoffset: [0, -40] }}
-            transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
-          />
-        </svg>
-      </div>
+          {/* STATE 3: CONNECTED */}
+          {status === 'connected' && (
+            <motion.div
+              key="connected"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="px-6 py-4 flex flex-col items-center justify-center"
+            >
+              {/* Success Icon */}
+              <div className="w-10 h-10 rounded-full bg-[#F3BA2F]/10 flex items-center justify-center mb-3 border border-[#F3BA2F]/20">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", delay: 0.1, bounce: 0.5 }}
+                >
+                  <RiCheckLine className="text-[#F3BA2F] text-xl" />
+                </motion.div>
+              </div>
+              
+              <span className="text-[13px] font-semibold text-zinc-100">
+                0x4A...8B91
+              </span>
+              
+              {/* BNB Chain Badge */}
+              <div className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-800/50 border border-zinc-700/50">
+                <div className="w-3 h-3 rounded-full bg-[#F3BA2F] flex items-center justify-center">
+                   <RiLinkM className="text-black text-[8px]" />
+                </div>
+                <span className="text-[10px] font-medium text-zinc-400">
+                  BNB Chain
+                </span>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

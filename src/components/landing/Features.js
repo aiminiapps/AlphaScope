@@ -97,6 +97,7 @@ function GemScannerVisual() {
     { name: "GEM", score: "9.2", color: "#F5D90A", dy: 0 },
     { name: "ALPHA", score: "8.6", color: "#3B82F6", dy: 20 },
     { name: "MOON", score: "7.9", color: "#A855F7", dy: 40 },
+    { name: "GEM", score: "6.2", color: "#F5D90A", dy: 50 },
   ];
   return (
     <div className="relative w-full h-full flex items-center justify-center">
@@ -434,9 +435,8 @@ export default function Features() {
           <h2 className="text-3xl md:text-5xl font-bold text-white mt-3">
             Your Unfair Advantage
           </h2>
-          <p className="text-[#888] mt-4 max-w-xl mx-auto">
-            Everything you need to find, analyze, and act on crypto opportunities
-            before the crowd.
+          <p className="text-[#888] mt-4 text-balance max-w-xl mx-auto">
+            Everything you need to find, analyze, and act on crypto opportunities before the crowd.
           </p>
         </motion.div>
 

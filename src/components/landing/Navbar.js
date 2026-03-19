@@ -23,81 +23,100 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-[#0B0B0B]/80 backdrop-blur-xl border-b border-[#2A2A2A]"
-            : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#F5D90A] flex items-center justify-center">
-              <span className="text-[#0B0B0B] font-bold text-sm">AS</span>
+      {/* Navbar Container */}
+      <div className="fixed top-4 left-0 right-0 z-50 flex justify-center w-full px-4 pointer-events-none">
+        <motion.nav
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} // smooth spring-like ease
+          className={`relative flex items-center justify-between w-full max-w-5xl px-4 py-2.5 mx-auto transition-all duration-500 pointer-events-auto rounded-full ${
+            scrolled || mobileOpen
+              ? "bg-[#111111]/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+              : "bg-[#0B0B0B]/30 backdrop-blur-lg border border-white/5 shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
+          }`}
+          style={{
+            boxShadow: scrolled || mobileOpen ? "inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0,0,0,0.6)" : "none"
+          }}
+        >
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 relative z-10 group pl-2">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#F5D90A] to-[#E5C90A] flex items-center justify-center shadow-[0_0_15px_rgba(245,217,10,0.4)] group-hover:shadow-[0_0_25px_rgba(245,217,10,0.6)] transition-all duration-300">
+              <span className="text-[#0B0B0B] font-black text-sm tracking-tighter">AS</span>
             </div>
-            <span className="text-white font-bold text-xl">
+            <span className="text-white font-bold text-lg tracking-tight hidden sm:block">
               Alpha<span className="text-[#F5D90A]">Scope</span>
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Links - Centered */}
+          <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-[#888] hover:text-white transition-colors text-sm font-medium"
+                className="px-5 py-2 text-[#AAA] hover:text-[#F5D90A] hover:bg-white/[0.04] rounded-full transition-all text-sm font-medium"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              href="/app"
-              className="px-5 py-2.5 bg-[#F5D90A] text-[#0B0B0B] rounded-lg font-semibold text-sm hover:bg-[#F5D90A]/90 transition-all hover:shadow-[0_0_20px_rgba(245,217,10,0.3)]"
+          {/* Right Actions */}
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="hidden md:block">
+              <Link
+                href="/app"
+                className="px-6 py-2.5 bg-gradient-to-r from-[#F5D90A] to-[#FFEA5C] text-[#0B0B0B] rounded-full font-bold text-sm hover:scale-105 transition-transform shadow-[0_0_20px_rgba(245,217,10,0.3)] hover:shadow-[0_0_25px_rgba(245,217,10,0.5)] block"
+              >
+                Launch App
+              </Link>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors focus:outline-none"
+              aria-label="Toggle menu"
             >
-              Launch App
-            </Link>
+              {mobileOpen ? <RiCloseLine size={24} /> : <RiMenu3Line size={24} />}
+            </button>
           </div>
+        </motion.nav>
+      </div>
 
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-white"
-          >
-            {mobileOpen ? <RiCloseLine size={24} /> : <RiMenu3Line size={24} />}
-          </button>
-        </div>
-      </motion.nav>
-
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-[#0B0B0B]/95 backdrop-blur-xl pt-20 px-6 md:hidden"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed top-[5.5rem] left-4 right-4 z-40 bg-[#111111]/80 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-6 md:hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
+            style={{
+              boxShadow: "inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 20px 60px rgba(0,0,0,0.8)"
+            }}
           >
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-white text-lg font-medium py-2 border-b border-[#2A2A2A]"
+                  className="text-[#CCC] hover:text-[#F5D90A] hover:bg-white/[0.04] px-4 py-3.5 rounded-xl text-lg font-medium transition-all"
                 >
                   {link.name}
                 </a>
               ))}
-              <Link
-                href="/app"
-                className="mt-4 px-5 py-3 bg-[#F5D90A] text-[#0B0B0B] rounded-lg font-semibold text-center"
-              >
-                Launch App
-              </Link>
+              <div className="pt-4 pb-2 mt-2 border-t border-white/5">
+                <Link
+                  href="/app"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full py-4 bg-gradient-to-r from-[#F5D90A] to-[#FFEA5C] text-[#0B0B0B] rounded-xl font-bold text-center shadow-[0_0_20px_rgba(245,217,10,0.2)] hover:scale-[1.02] transition-transform"
+                >
+                  Launch App
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

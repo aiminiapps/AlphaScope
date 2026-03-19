@@ -398,8 +398,18 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="md:col-span-3 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F5D90A]/20 transition-colors duration-500"
           >
-            <div className="h-[260px] relative">
+            <div className="p-3 rounded-2xl">
+              <div className="h-[260px] relative">
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+                      backgroundSize: "15px  15px",
+                      backgroundPosition: "0 0"
+                    }}
+                />
               <AnalyzerVisual />
+              </div>
             </div>
             <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-xl mb-2 flex items-center gap-2">
@@ -420,8 +430,18 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-3 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#3B82F6]/20 transition-colors duration-500"
           >
-            <div className="h-[260px] relative">
+            <div className="p-3 rounded-2xl">
+              <div className="h-[260px] relative">
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+                      backgroundSize: "15px  15px",
+                      backgroundPosition: "0 0"
+                    }}
+                />
               <GemScannerVisual />
+              </div>
             </div>
             <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-xl mb-2 flex items-center gap-2">
@@ -443,8 +463,18 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="md:col-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#A855F7]/20 transition-colors duration-500"
           >
-            <div className="h-[220px] relative">
+            <div className="p-3 rounded-2xl">
+              <div className="h-[220px] relative">
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+                      backgroundSize: "15px  15px",
+                      backgroundPosition: "0 0"
+                    }}
+                />
               <WalletVisual />
+              </div>
             </div>
             <div className="p-7 pt-2">
               <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
@@ -465,8 +495,18 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="md:col-span-2 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#F97316]/20 transition-colors duration-500"
           >
-            <div className="h-[220px] relative">
+            <div className="p-3 rounded-2xl">
+              <div className="h-[220px] relative">
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+                      backgroundSize: "15px  15px",
+                      backgroundPosition: "0 0"
+                    }}
+                />
               <AlertsVisual />
+              </div>
             </div>
             <div className="p-7 pt-2">
               <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
@@ -488,8 +528,18 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="md:col-span-2 md:row-span-1 rounded-3xl border border-[#1E1E1E] bg-gradient-to-b from-[#111] to-[#0A0A0A] flex flex-col overflow-hidden group hover:border-[#22C55E]/20 transition-colors duration-500"
           >
-            <div className="flex-1 min-h-[200px] relative">
+            <div className="p-3 rounded-2xl">
+              <div className="h-[220px] relative">
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+                      backgroundSize: "15px  15px",
+                      backgroundPosition: "0 0"
+                    }}
+                />
               <ChartVisual />
+              </div>
             </div>
             <div className="p-7 pt-0">
               <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">

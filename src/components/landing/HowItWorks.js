@@ -14,7 +14,7 @@ const steps = [
     icon: RiTrophyLine,
     step: "02",
     title: "Earn $ASCP",
-    description: "Complete quests and community tasks to earn ASCP tokens — no purchase required.",
+    description: "Complete quests and community tasks to earn ASCP tokens no purchase required.",
   },
   {
     icon: RiSearchLine,
@@ -64,9 +64,6 @@ export default function HowItWorks() {
             >
               <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#151515] border border-[#2A2A2A] mb-6">
                 <step.icon className="text-[#F5D90A] text-2xl" />
-                <span className="absolute -top-2 -right-2 w-7 h-7 rounded-lg bg-[#F5D90A] text-[#0B0B0B] text-xs font-bold flex items-center justify-center">
-                  {step.step}
-                </span>
               </div>
               <h3 className="text-white font-semibold text-lg mb-2">
                 {step.title}

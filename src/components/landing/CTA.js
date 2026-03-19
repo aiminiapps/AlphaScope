@@ -15,6 +15,14 @@ export default function CTA() {
           transition={{ duration: 0.7 }}
           className="relative rounded-3xl border border-[#2A2A2A] bg-[#151515] p-12 md:p-16 text-center overflow-hidden"
         >
+          <div
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage: `radial-gradient(circle at center, #F5D90A 1px, transparent 1px)`,
+            backgroundSize: "22px 22px",
+            backgroundPosition: "0 0"
+          }}
+        />
           {/* Glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-[#F5D90A]/10 rounded-full blur-[100px]" />
 

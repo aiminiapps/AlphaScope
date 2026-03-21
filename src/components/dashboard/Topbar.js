@@ -35,7 +35,7 @@ export default function Topbar() {
   return (
     <header className="sticky top-0 z-30 bg-[#0B0B0B]/80 backdrop-blur-xl border-b border-[#2A2A2A]">
       <div className="flex items-center justify-between px-4 lg:px-6 py-3">
-        <div className="flex items-center gap-3 flex-1 max-w-md ml-12 lg:ml-0">
+        <div className="flex opacity-0 items-center gap-3 flex-1 max-w-md ml-12 lg:ml-0">
           <div className="relative w-full">
             <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888] text-sm" />
             <input

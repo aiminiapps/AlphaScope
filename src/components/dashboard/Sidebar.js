@@ -37,7 +37,7 @@ export default function Sidebar() {
   const SidebarContent = ({ mobile = false }) => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="p-5 flex items-center justify-between border-b border-[#1E1E1E]">
+      <div className="px-5 py-4 flex items-center justify-between border-b border-[#1E1E1E]">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D90A] to-[#F0C000] flex items-center justify-center shrink-0 shadow-lg shadow-[#F5D90A]/10 group-hover:shadow-[#F5D90A]/20 transition-shadow">
             <span className="text-[#0B0B0B] font-extrabold text-sm tracking-tight">AS</span>
@@ -58,7 +58,7 @@ export default function Sidebar() {
             className="hidden lg:flex w-7 h-7 rounded-lg items-center justify-center text-[#666] hover:text-white hover:bg-[#1E1E1E] transition-all"
           >
             <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.3 }}>
-              {collapsed ? <RiMenu3Line size={15} /> : <RiCloseLine size={15} />}
+              {collapsed ? <RiMenu3Line size={15} /> : <RiCloseLine size={15}  className="sm:hidden block"/>}
             </motion.div>
           </button>
         )}

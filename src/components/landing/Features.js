@@ -94,60 +94,140 @@ function AnalyzerVisual() {
 
 function GemScannerVisual() {
   const gems = [
-    { name: "GEM", score: "9.2", color: "#F5D90A", dy: 0 },
-    { name: "ALPHA", score: "8.6", color: "#3B82F6", dy: 20 },
-    { name: "MOON", score: "7.9", color: "#A855F7", dy: 40 },
-    { name: "GEM", score: "6.2", color: "#F5D90A", dy: 50 },
+    { name: "GEM", score: "9.2", color: "#F5D90A", change: "+142%", mcap: "$1.2M", holders: "2,841", tag: "Hot" },
+    { name: "ALPHA", score: "8.6", color: "#3B82F6", change: "+89%", mcap: "$3.8M", holders: "5,120", tag: "Rising" },
+    { name: "MOON", score: "7.9", color: "#A855F7", change: "+210%", mcap: "$680K", holders: "1,293", tag: "New" },
+    { name: "DEGEN", score: "8.1", color: "#22C55E", change: "+67%", mcap: "$2.1M", holders: "3,742", tag: "Trending" },
   ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % gems.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [gems.length]);
+
+  const gem = gems[activeIndex];
+
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-[240px] mt-10 h-[180px]">
-        {gems.map((gem, i) => (
-          <motion.div
-            key={gem.name}
-            {...float(i * 0.8)}
-            className="absolute w-full rounded-xl bg-[#111]/90 border border-[#1E1E1E] p-3.5 backdrop-blur-sm shadow-xl"
-            style={{
-              top: gem.dy,
-              zIndex: 10 - i,
-              left: i * 12,
-              right: i * 10,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <motion.div
-                  // animate={{ rotate: [0, 360] }}
-                  transition={{ repeat: Infinity, duration: 8 + i * 4, ease: "linear" }}
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: `${gem.color}15`, border: `1px solid ${gem.color}30` }}
-                >
-                  <RiVipDiamondLine style={{ color: gem.color }} className="text-sm" />
-                </motion.div>
-                <div>
-                  <div className="text-white text-xs font-bold">${gem.name}</div>
-                  <div className="text-[#555] text-[9px]">Just listed</div>
+      <div className="w-[85%] max-w-[260px] flex flex-col items-center gap-3">
+        {/* Scanner Header */}
+        <div className="w-full rounded-xl bg-[#111]/80 border border-[#1E1E1E] p-3 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-2">
+              <RiVipDiamondLine className="text-[#3B82F6] text-sm" />
+              <span className="text-[10px] text-[#888] font-mono uppercase">Scanning Gems</span>
+            </div>
+            <motion.div
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="w-1.5 h-1.5 rounded-full bg-[#22C55E]"
+              style={{ boxShadow: "0 0 6px #22C55E" }}
+            />
+          </div>
+          {/* Progress bar that syncs with slideshow */}
+          <div className="w-full h-1 rounded-full bg-[#1A1A1A] overflow-hidden">
+            <motion.div
+              key={activeIndex}
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 3, ease: "linear" }}
+              className="h-full rounded-full bg-gradient-to-r from-[#F5D90A] to-[#F97316]"
+            />
+          </div>
+        </div>
+
+        {/* Gem Card Slideshow */}
+        <div className="w-full h-[130px] relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeIndex}
+              initial={{ opacity: 0, x: 40, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -40, scale: 0.95 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+              className="absolute inset-0 rounded-xl bg-[#111]/90 border border-[#1E1E1E] p-4 backdrop-blur-sm shadow-xl"
+            >
+              {/* Top row: icon, name, tag */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center"
+                    style={{ background: `${gem.color}15`, border: `1px solid ${gem.color}30` }}
+                  >
+                    <RiVipDiamondLine style={{ color: gem.color }} className="text-base" />
+                  </div>
+                  <div>
+                    <div className="text-white text-xs font-bold">${gem.name}</div>
+                    <div className="text-[#22C55E] text-[10px] font-semibold">{gem.change}</div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1.5">
+                  <span
+                    className="text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider"
+                    style={{ color: gem.color, backgroundColor: `${gem.color}15` }}
+                  >
+                    {gem.tag}
+                  </span>
+                  <span
+                    className="text-sm font-extrabold"
+                    style={{ color: gem.color }}
+                  >
+                    {gem.score}
+                  </span>
                 </div>
               </div>
-              <div className="flex flex-col items-end">
-                <motion.span
-                  {...pulse(i * 0.5)}
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-md"
-                  style={{
-                    color: gem.color,
-                    backgroundColor: `${gem.color}15`,
-                  }}
-                >
-                  {gem.score}
-                </motion.span>
+
+              {/* Stats row */}
+              <div className="flex items-center gap-3 pt-2 border-t border-[#1E1E1E]">
+                <div className="flex-1">
+                  <div className="text-[#555] text-[8px] uppercase font-mono">MCap</div>
+                  <div className="text-white text-[11px] font-semibold">{gem.mcap}</div>
+                </div>
+                <div className="w-px h-6 bg-[#1E1E1E]" />
+                <div className="flex-1">
+                  <div className="text-[#555] text-[8px] uppercase font-mono">Holders</div>
+                  <div className="text-white text-[11px] font-semibold">{gem.holders}</div>
+                </div>
+                <div className="w-px h-6 bg-[#1E1E1E]" />
+                <div className="flex-1">
+                  <div className="text-[#555] text-[8px] uppercase font-mono">Score</div>
+                  <div className="h-1 rounded-full bg-[#1A1A1A] mt-1.5 overflow-hidden">
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      animate={{ width: `${parseFloat(gem.score) * 10}%` }}
+                      transition={{ duration: 0.6, delay: 0.2 }}
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: gem.color }}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Navigation dots */}
+        <div className="flex items-center gap-2">
+          {gems.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className="relative w-2 h-2 rounded-full transition-all duration-300"
+              style={{
+                backgroundColor: i === activeIndex ? "#F5D90A" : "#333",
+                boxShadow: i === activeIndex ? "0 0 8px rgba(245,217,10,0.5)" : "none",
+              }}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Glow behind cards */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[#F5D90A]/5 rounded-full blur-[60px]" />
+      {/* Glow behind */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[#3B82F6]/5 rounded-full blur-[60px]" />
     </div>
   );
 }

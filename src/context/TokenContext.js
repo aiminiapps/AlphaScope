@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useAccount } from "wagmi";
 
 const TokenContext = createContext(null);
 
@@ -35,7 +36,8 @@ function saveToStorage(key, value) {
 }
 
 export function TokenProvider({ children }) {
-  const [balance, setBalance] = useState(INITIAL_BALANCE);
+  const { isConnected, address } = useAccount();
+  const [balance, setBalance] = useState(0);
   const [history, setHistory] = useState([]);
   const [completedQuests, setCompletedQuests] = useState([]);
   const [analyzedTokens, setAnalyzedTokens] = useState({});
@@ -44,10 +46,10 @@ export function TokenProvider({ children }) {
     WHALE_BUY: true, LIQUIDITY_SPIKE: true, VOLUME_SURGE: true, SMART_MONEY: true, NEW_TOKEN: false,
   });
   const [loaded, setLoaded] = useState(false);
+  const [walletInitialized, setWalletInitialized] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
-    setBalance(loadFromStorage(STORAGE_KEYS.balance, INITIAL_BALANCE));
     setHistory(loadFromStorage(STORAGE_KEYS.history, []));
     setCompletedQuests(loadFromStorage(STORAGE_KEYS.quests, []));
     setAnalyzedTokens(loadFromStorage(STORAGE_KEYS.analyzed, {}));
@@ -57,6 +59,29 @@ export function TokenProvider({ children }) {
     }));
     setLoaded(true);
   }, []);
+
+  // Wallet-aware balance: 0 when disconnected, load/grant INITIAL_BALANCE on connect
+  useEffect(() => {
+    if (!loaded) return;
+    if (isConnected && address) {
+      const storedBalance = loadFromStorage(STORAGE_KEYS.balance, null);
+      const hasInitialized = loadFromStorage("ascp_wallet_initialized", false);
+      if (hasInitialized) {
+        // Returning user — restore their balance
+        setBalance(storedBalance !== null ? storedBalance : INITIAL_BALANCE);
+      } else {
+        // First time connecting — grant initial tokens
+        setBalance(INITIAL_BALANCE);
+        saveToStorage(STORAGE_KEYS.balance, INITIAL_BALANCE);
+        saveToStorage("ascp_wallet_initialized", true);
+      }
+      setWalletInitialized(true);
+    } else {
+      // Wallet disconnected — show 0
+      setBalance(0);
+      setWalletInitialized(false);
+    }
+  }, [isConnected, address, loaded]);
 
   // Persist on change
   useEffect(() => {
@@ -150,6 +175,8 @@ export function TokenProvider({ children }) {
     trackedWallets,
     alertSettings,
     loaded,
+    isConnected,
+    walletInitialized,
     earnTokens,
     spendTokens,
     completeQuest,

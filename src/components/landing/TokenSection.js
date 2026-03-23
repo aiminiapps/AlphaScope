@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import {
   RiCoinLine,
   RiArrowDownLine,
@@ -101,10 +102,11 @@ export default function TokenSection() {
 
             {/* Glowing Coin */}
             <div className="relative z-10 w-36 h-36 rounded-full bg-gradient-to-tr from-[#F5D90A] via-[#FFEA5C] to-[#FFF4A3] flex items-center justify-center shadow-[0_0_50px_rgba(245,217,10,0.25)] mb-10 hover:shadow-[0_0_70px_rgba(245,217,10,0.4)] transition-all duration-700 hover:scale-105">
-              <div className="w-[8.25rem] h-[8.25rem] rounded-full bg-[#050505] flex items-center justify-center flex-col shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)] border border-[#F5D90A]/30">
+              <Image src="/agent.png" alt="ASCP" width={200} height={200} />
+              {/* <div className="w-[8.25rem] h-[8.25rem] rounded-full bg-[#050505] flex items-center justify-center flex-col shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)] border border-[#F5D90A]/30">
                 <RiCopperCoinLine className="text-[#F5D90A] text-5xl mb-1 opacity-90" />
                 <span className="text-white font-black text-sm tracking-widest bg-gradient-to-r from-white to-[#AAA] bg-clip-text text-transparent">ASCP</span>
-              </div>
+              </div> */}
             </div>
 
             <div className="text-center relative z-10">

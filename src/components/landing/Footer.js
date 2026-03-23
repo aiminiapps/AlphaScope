@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { RiTwitterXLine, RiArrowRightUpLine, RiBnbFill } from "react-icons/ri";
 
@@ -11,8 +12,8 @@ const footerLinks = {
     { name: "Alpha Alerts", href: "/app/alerts" },
   ],
   Community: [
-    { name: "Twitter / X", href: "#" },
-    { name: "Telegram", href: "#" }
+    { name: "Twitter / X", href: "https://x.com/ascp_ai" },
+    { name: "Whitepaper", href: "https://alpha-scope.gitbook.io/alpha-scope-docs" }
   ],
 };
 
@@ -29,12 +30,7 @@ export default function Footer() {
           {/* Brand & Socials */}
           <div className="max-w-sm">
             <Link href="/" className="flex items-center gap-3 mb-6 group inline-flex">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F5D90A] to-[#E5C90A] flex items-center justify-center shadow-[0_0_15px_rgba(245,217,10,0.3)] group-hover:shadow-[0_0_25px_rgba(245,217,10,0.5)] transition-all">
-                <span className="text-[#0B0B0B] font-black text-lg tracking-tighter">AS</span>
-              </div>
-              <span className="text-white font-bold text-2xl tracking-tight">
-                Alpha<span className="text-[#F5D90A]">Scope</span>
-              </span>
+            <Image src="/logo.png" alt="Logo" width={150} height={50} className="scale-110 pl-3" /> 
             </Link>
             <p className="text-[#888] text-sm leading-relaxed mb-8">
               The premier AI-powered crypto research platform. Discover early-stage tokens, analyze smart wallets, and unlock hidden market opportunities before the crowd.
@@ -43,7 +39,7 @@ export default function Footer() {
             {/* Minimal Socials (X and BscScan) */}
             <div className="flex flex-wrap items-center gap-4">
               <a
-                href="#"
+                href="https://x.com/ascp_ai"
                 className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#0B0B0B] border border-[#2A2A2A] text-[#AAA] hover:text-[#F5D90A] hover:border-[#F5D90A]/40 hover:bg-[#F5D90A]/5 transition-all duration-300"
               >
                 <RiTwitterXLine className="text-lg" />

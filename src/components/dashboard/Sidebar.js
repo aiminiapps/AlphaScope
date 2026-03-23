@@ -13,6 +13,7 @@ import {
 } from "react-icons/ri";
 import { NAV_ITEMS } from "@/lib/constants";
 import { useTokens } from "@/context/TokenContext";
+import Image from "next/image";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -39,7 +40,8 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="px-5 py-4 flex items-center justify-between border-b border-[#1E1E1E]">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D90A] to-[#F0C000] flex items-center justify-center shrink-0 shadow-lg shadow-[#F5D90A]/10 group-hover:shadow-[#F5D90A]/20 transition-shadow">
+        <Image src="/logo.png" alt="ASCP" width={150} height={60}  className="mx-auto scale-110"/>
+          {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D90A] to-[#F0C000] flex items-center justify-center shrink-0 shadow-lg shadow-[#F5D90A]/10 group-hover:shadow-[#F5D90A]/20 transition-shadow">
             <span className="text-[#0B0B0B] font-extrabold text-sm tracking-tight">AS</span>
           </div>
           {(!collapsed || mobile) && (
@@ -50,7 +52,7 @@ export default function Sidebar() {
             >
               Alpha<span className="text-[#F5D90A]">Scope</span>
             </motion.span>
-          )}
+          )} */}
         </Link>
         {!mobile && (
           <button

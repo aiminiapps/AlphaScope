@@ -28,11 +28,10 @@ const CATEGORIES = [
 ];
 
 const ALL_QUESTS = [
-  { id: "q1", title: "Follow AlphaScope on X", desc: "Follow our official account and stay updated", category: "social", icon: "twitter", reward: 100, link: "https://x.com/AIScopeAI" },
-  { id: "q2", title: "Like & Repost Launch Tweet", desc: "Engage with our launch announcement", category: "social", icon: "like", reward: 50, link: "https://x.com/AIScopeAI" },
-  { id: "q3", title: "Join Telegram Community", desc: "Join our Telegram group for alpha leaks", category: "social", icon: "telegram", reward: 100, link: "https://t.me/alphascope" },
-  { id: "q4", title: "Join Discord Server", desc: "Be part of the community on Discord", category: "social", icon: "discord", reward: 100, link: "https://discord.gg/alphascope" },
-  { id: "q5", title: "Share AlphaScope with Friends", desc: "Share a referral link on any platform", category: "social", icon: "share", reward: 75, link: "https://x.com/intent/tweet?text=Check%20out%20AlphaScope%20-%20AI-powered%20crypto%20research%20platform!%20%40AIScopeAI" },
+  { id: "q1", title: "Follow AlphaScope on X", desc: "Follow our official account and stay updated", category: "social", icon: "twitter", reward: 100, link: "https://x.com/ascp_ai" },
+  { id: "q2", title: "Like & Repost Launch Tweet", desc: "Engage with our launch announcement", category: "social", icon: "like", reward: 50, link: "https://x.com/ascp_ai" },
+  { id: "q3", title: "Join Telegram Community", desc: "Join our Telegram group for alpha leaks", category: "social", icon: "telegram", reward: 100, link: "https://x.com/ascp_ai" },
+  { id: "q5", title: "Share AlphaScope with Friends", desc: "Share a referral link on any platform", category: "social", icon: "share", reward: 75, link: "https://x.com/intent/tweet?text=Check%20out%20AlphaScope%20-%20AI-powered%20crypto%20research%20platform!%20%40ascp_ai" },
   { id: "q6", title: "Analyze Your First Token", desc: "Run the AI Analyzer on any token", category: "platform", icon: "search", reward: 150, link: null },
   { id: "q7", title: "Explore the Gem Scanner", desc: "Open the Hidden Gem Scanner page", category: "platform", icon: "gem", reward: 50, link: null },
   { id: "q8", title: "Connect Your Wallet", desc: "Link a wallet to your AlphaScope account", category: "platform", icon: "wallet", reward: 200, link: null },
